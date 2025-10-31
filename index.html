@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tahterevalli Simülasyounu</title>
+    <link rel="stylesheet" href="styles.css"/>
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <main class = "container">
+        <h1 class="title"> Tahterevalli Simülasyonu</h1>
+
+        <!-- information -->
+
+        <section class="info">
+            <div class="badge">Sol Toplam: <strong id="leftWeight">0</strong> kg</div>
+            <div class="badge">Sağ Toplam: <strong id="rightWeight">0</strong>kg</div>
+            <div class="spacer"></div>
+            <div class="badge">Sıradaki Ağırlık: <strong id="nextWeight">?</strong>kg</div>
+            <div class="badge">Eğim: <strong id="angleInfo">0</strong>derece</div>
+        </section>
+
+        <!-- Tahta ve balance -->
+
+        <div class="system"></div>
+        <div id="plank" class="plank">
+            <div id="objectsLayer" class="objects-layer"></div>
+        </div>
+
+        <section class="controls">
+            <button id="resetbutton" type="button">Reset</button>
+        </section>
+
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>

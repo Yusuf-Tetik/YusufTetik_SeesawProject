@@ -1,0 +1,86 @@
+* {box-sizing: border-box;}
+:root {
+    --bg:#ffffff;
+    --text: #000000;
+    --plank: #8b9dc3;
+    --pivot: #454545;;
+}
+
+html, body {
+    margin:0;
+    height:100%;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color:var(--text);
+
+}
+
+.container {
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    gap: 24px;
+    padding: 24px;
+}
+
+.info, controls {
+    display: flex;
+    gap: 24px;
+    font-weight: 700;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.info .spacer { flex: 1 1 auto;}
+.badge strong {
+    background: #eef2ff;
+    border: 1px solid #dbe3ff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 4px;
+}
+.badge strong {color: 1d4ed8;}
+
+.system {
+    width: 520px;
+    height: 160px;
+    position: relative;
+    display:flex; align-items: center; justify-content: center;
+}
+
+.plank {
+    width: 400px;
+    height: 14px;
+    background: var(--plank);
+    border-radius: 7px; position: relative; transform-origin: 50% 50%;
+    cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    user-select: none; z-index: 1;
+}
+.plank::after {
+    content:""; position: absolute; left: 50%; top: 50%;
+    width: 12px; height: 12px; background: #222; border-radius: 50%;
+    transform: translate(-50%,-50%); box-shadow: 0 0 0 2px #fff4, 0 2px 6px rba(0,0,0,0.25);
+    pointer-events:none;
+}
+.object-layer {
+    position:absolute;
+    inset:0;
+    pointer-events: none;
+    z-index: 2;
+}
+.pivot {
+    position:absolute; left: 50%; top:50%; transform: translate(-50%,-7px);
+    width:0 ; height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-bottom: 26px solid var(--pivot);
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+    z-index: 0;
+}
+.controls button {
+    appearance: none; border:0; background: #0f62fe; color: white;
+    padding: 10px 16px; border-radius:10px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15,98,254,025);
+
+}
+.contols button:avtive { transform: translateY(1px); }

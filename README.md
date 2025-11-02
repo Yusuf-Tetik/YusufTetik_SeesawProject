@@ -40,4 +40,11 @@ hataları daha hızlı bulmamı sağladı ve bu da bana ciddi şekilde zaman kaz
 Ayrıca bazı fiziksel hesaplamaların doğruluğunu kontrol ederken kısa süreli fikir desteği aldım.
 
 ---
+## 🌐 Canlı Demo
 
+Projeyi canlı olarak görüntülemek için aşağıdaki bağlantıyı kullanabilirsiniz:  
+🔗 [Tahterevalli Simülasyonu – Netlify Üzerinde Görüntüle](https://yusuftetik-seesawproject.netlify.app/)
+
+Site üzerinde ağırlıkları ekleyebilir, dengeyi gözlemleyebilir ve **gerçek zamanlı fizik simülasyonunu** test edebilirsiniz.
+
+---

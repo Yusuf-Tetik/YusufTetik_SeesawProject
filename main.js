@@ -62,6 +62,7 @@ plank.addEventListener("click", (e)=> {
     startAnimationLoop();
     updateUIBadges();
     saveState();
+    addLogEntry(weight, x)
 });
 
 resetBtn.addEventListener("click", () => {
@@ -76,7 +77,13 @@ resetBtn.addEventListener("click", () => {
     recalcPhysics();
     plank.style.transform= "rotate(0deg)";
     updateUIBadges();
+
+    const logContainer = document.getElementById("logContainer");
+    if(logContainer) {
+        logContainer.innerHTML= "";
+    }
     localStorage.removeItem(STORAGE_KEY);
+    
 })
 
 function renderObjects() {
@@ -195,6 +202,25 @@ function getLocalX(event) {
     return localX;
         
 }
+
+function addLogEntry(weight, x) {
+    const container =document.getElementById("logContainer");
+    if(!container) return;
+
+    const side = x < 0 ? "Sol" : "Sağ";
+    const distance = Math.abs(x).toFixed(0);
+    const msg = `${weight} kg ağırlık, ${side} taraftan, ${distance} px mesafeye düştü.`;
+
+    const div = document.createElement("div");
+    div.className = "log-item";
+    div.textContent = msg;
+
+    container.prepend(div);
+
+    if (container.childElementCount > 20) {
+        container.removeChild(container.lastChild);
+    }
+} 
 
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));

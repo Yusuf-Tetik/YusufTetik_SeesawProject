@@ -14,6 +14,10 @@ const rightWeightE1= document.getElementById("rightWeight");
 
 let objects= [];
 
+let angleCurrent= 0;
+let angleTarget= 0;
+let rafId= null;
+
 plank.addEventListener("click", (e)=> {
     const x= getLocalX(e);
     console.log("localX:", x);
@@ -23,6 +27,7 @@ plank.addEventListener("click", (e)=> {
 
     renderObjects();
     recalcPhysics();
+    startAnimationLoop();
 });
 
 function renderObjects() {
@@ -74,8 +79,32 @@ function recalcPhysics() {
     }
     
     const rawAngle = (rightTorque - leftTorque) / K;
-    const angleDeg = clamp(rawAngle, -angleMAX, angleMAX);
-    plank.style.transform = `rotate(${angleDeg}deg)`;
+    angleTarget = clamp(rawAngle, -angleMAX, angleMAX);
+}
+
+function startAnimationLoop() {
+    if(rafId != null) {
+        return;
+    }
+
+    const EASING = 0.1;
+
+    const step = () => {
+        const diff =angleTarget - angleCurrent;
+
+        if(Math.abs(diff)>0.001) {
+            angleCurrent += diff * EASING;
+            plank.style.transform= `rotate(${angleCurrent}deg)`;
+            rafId = requestAnimationFrame(step);
+        } else {
+            angleCurrent = angleTarget;
+            plank.style.transform= `rotate(${angleCurrent}deg)`;
+            cancelAnimationFrame(rafId);
+            rafId= null;
+        }
+    };
+
+    rafId = requestAnimationFrame(step);
 }
 
 
@@ -94,8 +123,8 @@ function getLocalX(event) {
         
 }
 
-function clamp(value, max, min) {
-    return Math.max(max, Math.min(min, value));
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
 }
 
 

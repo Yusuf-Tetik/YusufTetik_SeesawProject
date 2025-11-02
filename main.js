@@ -5,6 +5,7 @@ const HALF = L/2;
 
 const angleMAX = 30;
 const K = 10;
+const STORAGE_KEY= "seesaw-state";
 
 const plank = document.getElementById("plank");
 const objectsLayer = document.getElementById("objectsLayer");
@@ -12,23 +13,58 @@ const objectsLayer = document.getElementById("objectsLayer");
 const leftWeightE1= document.getElementById("leftWeight");
 const rightWeightE1= document.getElementById("rightWeight");
 
+const nextWeightE1= document.getElementById("nextWeight");
+const angleInfoE1= document.getElementById("angleInfo");
+const resetBtn= document.getElementById("resetBtn");
+
+
 let objects= [];
 
 let angleCurrent= 0;
 let angleTarget= 0;
 let rafId= null;
 
+let nextWeight= randInt(1,10);
+
+const saved =loadState();
+if(saved) {
+    objects=saved.objects || [];
+    angleCurrent = saved.angleCurrent || 0;
+    angleMAX = saved.angleTarget || 0;
+    nextWeight= saved.nextWeight || randInt(1,10);
+
+    renderObjects();
+    recalcPhysics();
+    plank.style.transform= `rotate(${angleCurrent}deg)`;
+    updateUIBadges();
+}
+
 plank.addEventListener("click", (e)=> {
     const x= getLocalX(e);
     console.log("localX:", x);
 
-    const weight= randInt(1,10);
+    const weight= nextWeight;
     objects.push({x, weight})
+
+    nextWeight= randInt(1,10);
 
     renderObjects();
     recalcPhysics();
     startAnimationLoop();
 });
+
+resetBtn.addEventListener("click", () => {
+    objects= [];
+    angleCurrent= 0;
+    angleTarget= 0;
+    nextWeight= randInt(1,10);
+
+    renderObjects();
+    recalcPhysics();
+    plank.style.transform= "rotate(0deg)";
+    updateUIBadges();
+    localStorage.removeItem(STORAGE_KEY);
+})
 
 function renderObjects() {
     objectsLayer.innerHTML= "";
@@ -95,6 +131,7 @@ function startAnimationLoop() {
         if(Math.abs(diff)>0.001) {
             angleCurrent += diff * EASING;
             plank.style.transform= `rotate(${angleCurrent}deg)`;
+            updateUIBadges();
             rafId = requestAnimationFrame(step);
         } else {
             angleCurrent = angleTarget;
@@ -107,7 +144,28 @@ function startAnimationLoop() {
     rafId = requestAnimationFrame(step);
 }
 
+function updateUIBadges() {
+    if(nextWeightE1) {
+        nextWeightE1.textContent= nextWeight;
+}
+if(!angleInfoE1) {
+    return;
+}
 
+const a = angleCurrent;
+const deg = Math.abs(a).toFixed(1);
+let text;
+
+if(Math.abs(a) < 0.05) {
+    text = "Düz (0°)";
+} else if(a > 0) {
+    text = `Sağa eğik (${deg}°)`;
+} else {
+    text = `Sola eğik (${deg}°)`;
+}
+
+angleInfoE1.textContent= text;
+}
 function getLocalX(event) {
     const rect = plank.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -130,4 +188,24 @@ function clamp(value, min, max) {
 
 function randInt(min,max) {
     return Math.floor(Math.random()*(max-min +1)) + min;
+}
+
+function saveState() {
+    try {
+        const state = {
+            objects,
+            angleCurrent,
+            angleTarget,
+            nextWeight
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch {}
+}
+function loadState() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
 }

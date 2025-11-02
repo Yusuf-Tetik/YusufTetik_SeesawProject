@@ -3,7 +3,7 @@
     --bg:#ffffff;
     --text: #000000;
     --plank: #8b9dc3;
-    --pivot: #454545;;
+    --pivot: #454545;
 }
 
 html, body {
@@ -22,26 +22,36 @@ html, body {
     gap: 24px;
     padding: 24px;
 }
+.title {
+    margin: 0;
+    font-size: clamp(18px, 3vm,26px);
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
 
-.info, controls {
+.info, .controls {
     display: flex;
     gap: 24px;
     font-weight: 700;
     align-items: center;
     flex-wrap: wrap;
 }
-.info .spacer { flex: 1 1 auto;}
-.badge strong {
+.info .spacer { flex: 1 1 auto; }
+
+.badge {
     background: #eef2ff;
     border: 1px solid #dbe3ff;
     padding: 6px 12px;
     border-radius: 8px;
     font-weight: 700;
-    display: flex; align-items: center; gap: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
-.badge strong {color: 1d4ed8;}
+.badge strong {color: #1d4ed8;}
 
-.system {
+.rig {
     width: 520px;
     height: 160px;
     position: relative;
@@ -53,16 +63,18 @@ html, body {
     height: 14px;
     background: var(--plank);
     border-radius: 7px; position: relative; transform-origin: 50% 50%;
-    cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    user-select: none; z-index: 1;
+    cursor: pointer; 
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    user-select: none;
+    z-index: 1;
 }
 .plank::after {
     content:""; position: absolute; left: 50%; top: 50%;
     width: 12px; height: 12px; background: #222; border-radius: 50%;
-    transform: translate(-50%,-50%); box-shadow: 0 0 0 2px #fff4, 0 2px 6px rba(0,0,0,0.25);
+    transform: translate(-50%,-50%); box-shadow: 0 0 0 2px #fff4, 0 2px 6px rgba(0,0,0,0.25);
     pointer-events:none;
 }
-.object-layer {
+.objects-layer {
     position:absolute;
     inset:0;
     pointer-events: none;
@@ -84,7 +96,7 @@ html, body {
     user-select:none;
 }
 .pivot {
-    position:absolute; left: 50%; top:50%; transform: translate(-50%,-7px);
+    position:absolute; left: 50%; top:50%; transform: translate(-50%, 7px);
     width:0 ; height: 0;
     border-left: 16px solid transparent;
     border-right: 16px solid transparent;
@@ -95,7 +107,23 @@ html, body {
 .controls button {
     appearance: none; border:0; background: #0f62fe; color: white;
     padding: 10px 16px; border-radius:10px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 4px 14px rgba(15,98,254,025);
+    box-shadow: 0 4px 14px rgba(15,98,254,0.25);
 
 }
-.contols button:avtive { transform: translateY(1px); }
+.controls button:hover { background: #0046d5; }
+.contols button:active { transform: translateY(1px); }
+
+.object.falling {
+    animation: drop 420ms cubic-bezier(.2,.8,.2,1);
+}
+@keyframes drop {
+    0% {
+        transform: translate(-50%, -140px) scale(0.85); opacity: 0;
+    }
+    60% {
+        transform: translate(-50%, -10px) scale(1.02); opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -6px) scale(1.0); opacity: 1;
+    }
+}

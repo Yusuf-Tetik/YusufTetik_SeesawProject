@@ -7,6 +7,11 @@ const angleMAX = 30;
 const K = 10;
 const STORAGE_KEY= "seesaw-state";
 
+const COLOR_BY_WEIGHT= {
+    1: `#e0f2ff`, 2: `#bfe6ff`, 3: `#9fd9ff`, 4: `#7fcaff`, 5: `#5fb9ff`,
+    6: `#7dd3a7`, 7: `#52b788`, 8: `#2c7da0`, 9: `#e76f51`, 10: `#c0392b`
+};
+
 const plank = document.getElementById("plank");
 const objectsLayer = document.getElementById("objectsLayer");
 
@@ -26,11 +31,13 @@ let rafId= null;
 
 let nextWeight= randInt(1,10);
 
+let lastAddedIndex= null;
+
 const saved =loadState();
 if(saved) {
     objects=saved.objects || [];
     angleCurrent = saved.angleCurrent || 0;
-    angleMAX = saved.angleTarget || 0;
+    angleTarget = saved.angleTarget || 0;
     nextWeight= saved.nextWeight || randInt(1,10);
 
     renderObjects();
@@ -48,9 +55,13 @@ plank.addEventListener("click", (e)=> {
 
     nextWeight= randInt(1,10);
 
+    lastAddedIndex= objects.length -1;
+
     renderObjects();
     recalcPhysics();
     startAnimationLoop();
+    updateUIBadges();
+    saveState();
 });
 
 resetBtn.addEventListener("click", () => {
@@ -58,6 +69,8 @@ resetBtn.addEventListener("click", () => {
     angleCurrent= 0;
     angleTarget= 0;
     nextWeight= randInt(1,10);
+
+    lastAddedIndex= null;
 
     renderObjects();
     recalcPhysics();
@@ -68,7 +81,7 @@ resetBtn.addEventListener("click", () => {
 
 function renderObjects() {
     objectsLayer.innerHTML= "";
-    for(const obj of objects) {
+    objects.forEach((obj, index) => {
         const ce = document.createElement("div");
         ce.className="object";
 
@@ -76,16 +89,18 @@ function renderObjects() {
         ce.style.left= `${obj.x + HALF}px`;
         ce.style.width= `${size}px`;
         ce.style.height= `${size}px`;
-        ce.style.background= "orange";
+        ce.style.background= COLOR_BY_WEIGHT[obj.weight];
         ce.textContent= obj.weight;
         
-        ce.style.position= "absolute";
-        ce.style.bottom= "100%";
-        ce.style.transform= "translate(-50%, 0)";
-
-        objectsLayer.appendChild(ce);
-
+       if(lastAddedIndex !== null && index === lastAddedIndex) {
+        ce.classList.add("falling")
+        ce.addEventListener("animationend", () => {
+            ce.classList.remove("falling");
+       }, {once: true});
     }
+        objectsLayer.appendChild(ce);
+    });
+    lastAddedIndex= null;
 }
 
 function recalcPhysics() {
@@ -198,7 +213,7 @@ function saveState() {
             angleTarget,
             nextWeight
         };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {}
 }
 function loadState() {
